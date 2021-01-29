@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Target ${{ matrix.os }} using Go v${{ matrix.go }}
+    name: For ${{ matrix.os }} using Go v${{ matrix.go }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
