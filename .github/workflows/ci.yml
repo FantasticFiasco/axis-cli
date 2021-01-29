@@ -4,15 +4,16 @@ on: [push, pull_request]
 
 jobs:
   build:
+    name: Target ${{ matrix.os }} using Go v${{ matrix.go }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         go: ["1.13", "1.14", "1.15"]
     runs-on: ${{ matrix.os }}
-    name: Build for ${{ matrix.os }} using Go v${{ matrix.go }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
       - run: go build -v ./...
+      - run: go test -race ./...
