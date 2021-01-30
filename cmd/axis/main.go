@@ -13,6 +13,6 @@ func main() {
 
 	if *version == true {
 		fmt.Printf("axis version %s (%s)\n", build.Version, build.Date)
-		fmt.Printf("https://github.com/FantasticFiasco/axis-cli/releases/tag/%s", build.Tag)
+		fmt.Println(build.ReleaseUrl)
 	}
 }
