@@ -3,31 +3,69 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"io"
 	"os"
+	"strings"
 )
 
 func main() {
 	args := os.Args[1:]
 
 	if len(args) == 0 {
-		usage(os.Stderr)
+		args = append(args, "usage")
+	}
+
+	var err error
+
+	switch args[0] {
+	case "bin/axis":
+		break
+	case "clean":
+		err = rmrf("bin")
+		break
+	default:
+		err = usage()
+		break
+	}
+
+	if err != nil {
+		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 }
 
-func usage(w io.Writer) {
-	fmt.Fprintln(w, "Usage: go run scripts/build.go <task>")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "Known tasks are:")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "  bin/axis:")
-	fmt.Fprintln(w, "    Builds the main executable.")
-	fmt.Fprintln(w, "    Supported environment variables:")
-	fmt.Fprintln(w, "    - GO_LDFLAGS")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "  clean:")
-	fmt.Fprintln(w, "    Deletes all built files.")
-	fmt.Fprintln(w, "")
+func usage() error {
+	return errors.New(
+		strings.Join([]string{
+			"Usage: go run scripts/build.go <task>",
+			"",
+			"Known tasks are:",
+			"",
+			"  bin/axis:",
+			"    Builds the main executable.",
+			"    Supported environment variables:",
+			"    - GO_LDFLAGS",
+			"",
+			"  clean:",
+			"    Deletes all built files.",
+			"",
+		},
+			"\n"),
+	)
+}
+
+func rmrf(targets ...string) error {
+	args := append([]string{"rm", "-rf"}, targets...)
+	print(args)
+	for _, target := range targets {
+		if err := os.RemoveAll(target); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func print(args []string) {
+	fmt.Println(strings.Join(args, " "))
 }
