@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ func main() {
 
 	switch args[0] {
 	case "bin/axis":
+		err = build()
 		break
 	case "clean":
 		err = delete("bin")
@@ -31,6 +33,20 @@ func main() {
 		fmt.Print(err)
 		os.Exit(1)
 	}
+}
+
+func build() error {
+	goos := os.Getenv("OS")
+	goarch := os.Getenv("ARCH")
+	out := fmt.Sprintf("./bin/axis_%s_%s", goos, goarch)
+
+	return run("go", "build", "-o", out, "-v", "./cmd/axis")
+}
+
+func run(exe string, args ...string) error {
+	fmt.Printf("%s %s\n", exe, strings.Join(args, " "))
+	cmd := exec.Command(exe, args...)
+	return cmd.Run()
 }
 
 func delete(targets ...string) error {
@@ -53,7 +69,8 @@ func usage() error {
 			"  bin/axis:",
 			"    Builds the main executable.",
 			"    Supported environment variables:",
-			"    - GO_LDFLAGS",
+			"    - OS",
+			"    - ARCH",
 			"",
 			"  clean:",
 			"    Deletes all built files.",
