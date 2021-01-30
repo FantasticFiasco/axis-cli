@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build and test on ${{ matrix.os }} using Go v${{ matrix.go }}
+    name: Build/Test [${{ matrix.os }}, Go v${{ matrix.go }}]
     strategy:
       fail-fast: false
       matrix:
@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
-      - run: echo -e "$(curl --silent https://raw.githubusercontent.com/FantasticFiasco/logo/master/logo.ansi)"
       - run: go build -v ./...
       - run: go test -race ./...
   
