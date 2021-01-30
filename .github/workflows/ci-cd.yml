@@ -1,0 +1,31 @@
+name: CI/CD
+
+on: [push, pull_request]
+
+jobs:
+  build_and_test:
+    name: Build and test on ${{ matrix.os }} using Go v${{ matrix.go }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        go: ["1.15"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go build -v ./...
+      - run: go test -race ./...
+  
+  release:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - echo TODO
+      
+
+
+// go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+  
