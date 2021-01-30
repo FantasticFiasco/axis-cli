@@ -20,7 +20,7 @@ jobs:
         run: go build -v ./...
       - name: Test
         run: go test -race ./...
-  
+
   release:
     name: Release
     needs: build
@@ -30,17 +30,45 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "1.15"
-      - name: Build for MacOS
+      - name: Build for macOS
         run: GOOS=darwin GOARCH=amd64 go build -o axis_macos_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
       - name: Build for Linux
         run: GOOS=linux GOARCH=amd64 go build -o axis_linux_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
       - name: Build for Windows
         run: GOOS=windows GOARCH=amd64 go build -o axis_windows_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
       - uses: actions/create-release@v1
+        id: create_release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: TODO
-          draft: true      
+          draft: true
+      - name: Upload artifact for macOS
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./axis_macos_amd64
+          asset_name: axis_macos_amd64
+          asset_content_type: application/octet-stream
+      - name: Upload artifact for Linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./axis_linux_amd64
+          asset_name: axis_linux_amd64
+          asset_content_type: application/octet-stream
+      - name: Upload artifact for Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./axis_windows_amd64
+          asset_name: axis_windows_amd64
+          asset_content_type: application/octet-stream
