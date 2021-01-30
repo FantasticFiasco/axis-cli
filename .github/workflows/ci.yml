@@ -16,4 +16,10 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - run: go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+  
+  test:
+    needs: build
+    steps:
       - run: go test -race ./...
+
+
