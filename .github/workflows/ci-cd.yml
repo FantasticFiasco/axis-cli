@@ -3,7 +3,7 @@ name: CI/CD
 on: [push, pull_request]
 
 jobs:
-  build_and_test:
+  build:
     name: Build and test on ${{ matrix.os }} using Go v${{ matrix.go }}
     strategy:
       fail-fast: false
@@ -16,16 +16,18 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
+      - run: echo -e "$(curl --silent https://raw.githubusercontent.com/FantasticFiasco/logo/master/logo.ansi)"
       - run: go build -v ./...
       - run: go test -race ./...
   
   release:
-    needs: build_and_test
+    name: Release
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - echo TODO
-      
-
-
-// go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
-  
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.15"
+      - run: go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+      - run: ls -la
