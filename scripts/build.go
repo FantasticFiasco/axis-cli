@@ -39,14 +39,18 @@ func main() {
 func build() error {
 	goos := os.Getenv("OS")
 	goarch := os.Getenv("ARCH")
-	tag := strings.ReplaceAll(os.Getenv("GITHUB_REF"), "refs/tags/", "")
-	fmt.Printf("tag: %s\n", tag)
 	out := fmt.Sprintf("./bin/axis_%s_%s", goos, goarch)
-	ldflags := "-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' " +
-		fmt.Sprintf("-X 'github.com/FantasticFiasco/axis-cli/internal/build.ReleaseUrl=%s' ", releaseURL(tag)) +
-		fmt.Sprintf("-X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=%s'", date())
 
-	_, err := run(
+	ldflags := "-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO'"
+
+	tag := strings.ReplaceAll(os.Getenv("GITHUB_REF"), "refs/tags/", "")
+	releaseURL := releaseURL(tag)
+	ldflags = fmt.Sprintf("%s -X 'github.com/FantasticFiasco/axis-cli/internal/build.ReleaseURL=%s'", ldflags, releaseURL)
+
+	date := date()
+	ldflags = fmt.Sprintf("%s -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=%s'", ldflags, date)
+
+	return run(
 		"go",
 		"build",
 		"-o",
@@ -54,8 +58,6 @@ func build() error {
 		"-v",
 		"-ldflags="+ldflags,
 		"./cmd/axis")
-
-	return err
 }
 
 func releaseURL(tag string) string {
@@ -71,11 +73,11 @@ func date() string {
 	return t.Format("2006-01-02")
 }
 
-func run(exe string, args ...string) ([]byte, error) {
+func run(exe string, args ...string) error {
 	fmt.Printf("%s %s\n", exe, strings.Join(args, " "))
 	out, err := exec.Command(exe, args...).CombinedOutput()
 	fmt.Println(string(out))
-	return out, err
+	return err
 }
 
 func delete(targets ...string) error {
