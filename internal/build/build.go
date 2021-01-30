@@ -1,7 +1,5 @@
 package build
 
 var Version string = "development"
-
-var Tag string = "local"
-
+var ReleaseUrl string = "https://github.com/FantasticFiasco/axis-cli/releases"
 var Date string = "YYYY-MM-DD"
