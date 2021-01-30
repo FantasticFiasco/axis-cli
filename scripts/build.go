@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -38,12 +39,14 @@ func main() {
 func build() error {
 	goos := os.Getenv("OS")
 	goarch := os.Getenv("ARCH")
+	tag := os.Getenv("TAG")
+	fmt.Printf("tag: %s\n", tag)
 	out := fmt.Sprintf("./bin/axis_%s_%s", goos, goarch)
 	ldflags := "-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' " +
-		"-X 'github.com/FantasticFiasco/axis-cli/internal/build.ReleaseUrl=TODO' " +
-		"-X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=TODO'"
+		fmt.Sprintf("-X 'github.com/FantasticFiasco/axis-cli/internal/build.ReleaseUrl=%s' ", releaseURL(tag)) +
+		fmt.Sprintf("-X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=%s'", date())
 
-	return run(
+	_, err := run(
 		"go",
 		"build",
 		"-o",
@@ -51,13 +54,28 @@ func build() error {
 		"-v",
 		"-ldflags="+ldflags,
 		"./cmd/axis")
+
+	return err
 }
 
-func run(exe string, args ...string) error {
+func releaseURL(tag string) string {
+	url := "https://github.com/FantasticFiasco/axis-cli/releases"
+	if tag != "" {
+		url = fmt.Sprintf("%s/tag/%s", url, tag)
+	}
+	return url
+}
+
+func date() string {
+	t := time.Now()
+	return t.Format("2006-01-02")
+}
+
+func run(exe string, args ...string) ([]byte, error) {
 	fmt.Printf("%s %s\n", exe, strings.Join(args, " "))
 	out, err := exec.Command(exe, args...).CombinedOutput()
 	fmt.Println(string(out))
-	return err
+	return out, err
 }
 
 func delete(targets ...string) error {
@@ -82,6 +100,7 @@ func usage() error {
 			"    Supported environment variables:",
 			"    - OS",
 			"    - ARCH",
+			"    - TAG",
 			"",
 			"  clean:",
 			"    Deletes all built files.",

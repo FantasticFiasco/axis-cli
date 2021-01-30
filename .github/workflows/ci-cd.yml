@@ -32,11 +32,11 @@ jobs:
         with:
           go-version: '1.15'
       - name: Build for macOS
-        run: OS=darwin ARCH=amd64 go run ./scripts/build.go bin/axis
+        run: OS=darwin ARCH=amd64 TAG=${{ github.ref }}  go run ./scripts/build.go bin/axis
       - name: Build for Linux
-        run: OS=linux ARCH=amd64 go run ./scripts/build.go bin/axis
+        run: OS=linux ARCH=amd64 TAG=${{ github.ref }} go run ./scripts/build.go bin/axis
       - name: Build for Windows
-        run: OS=windows ARCH=amd64 go run ./scripts/build.go bin/axis
+        run: OS=windows ARCH=amd64 TAG=${{ github.ref }} go run ./scripts/build.go bin/axis
       - uses: actions/create-release@v1
         id: create_release
         env:
