@@ -39,7 +39,7 @@ func main() {
 func build() error {
 	goos := os.Getenv("OS")
 	goarch := os.Getenv("ARCH")
-	tag := os.Getenv("TAG")
+	tag := strings.ReplaceAll(os.Getenv("GITHUB_REF"), "refs/tags/", "")
 	fmt.Printf("tag: %s\n", tag)
 	out := fmt.Sprintf("./bin/axis_%s_%s", goos, goarch)
 	ldflags := "-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' " +
@@ -100,7 +100,7 @@ func usage() error {
 			"    Supported environment variables:",
 			"    - OS",
 			"    - ARCH",
-			"    - TAG",
+			"    - GITHUB_REF",
 			"",
 			"  clean:",
 			"    Deletes all built files.",

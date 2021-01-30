@@ -32,11 +32,11 @@ jobs:
         with:
           go-version: '1.15'
       - name: Build for macOS
-        run: OS=darwin ARCH=amd64 TAG=${{ github.ref }}  go run ./scripts/build.go bin/axis
+        run: OS=darwin ARCH=amd64 GITHUB_REF=${{ github.ref }}  go run ./scripts/build.go bin/axis
       - name: Build for Linux
-        run: OS=linux ARCH=amd64 TAG=${{ github.ref }} go run ./scripts/build.go bin/axis
+        run: OS=linux ARCH=amd64 GITHUB_REF=${{ github.ref }} go run ./scripts/build.go bin/axis
       - name: Build for Windows
-        run: OS=windows ARCH=amd64 TAG=${{ github.ref }} go run ./scripts/build.go bin/axis
+        run: OS=windows ARCH=amd64 GITHUB_REF=${{ github.ref }} go run ./scripts/build.go bin/axis
       - uses: actions/create-release@v1
         id: create_release
         env:
@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./axis_macos_amd64
+          asset_path: ./bin/axis_macos_amd64
           asset_name: axis_macos_amd64
           asset_content_type: application/octet-stream
       - name: Upload artifact for Linux
@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./axis_linux_amd64
+          asset_path: ./bin/axis_linux_amd64
           asset_name: axis_linux_amd64
           asset_content_type: application/octet-stream
       - name: Upload artifact for Windows
@@ -70,6 +70,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./axis_windows_amd64
+          asset_path: ./bin/axis_windows_amd64
           asset_name: axis_windows_amd64
           asset_content_type: application/octet-stream
