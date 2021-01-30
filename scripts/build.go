@@ -1,5 +1,3 @@
-// Build tasks for the project
-
 package main
 
 import (
@@ -30,7 +28,7 @@ func main() {
 	}
 
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Print(err)
 		os.Exit(1)
 	}
 }
@@ -49,6 +47,7 @@ func usage() error {
 			"",
 			"  clean:",
 			"    Deletes all built files.",
+			"",
 			"",
 		},
 			"\n"),
