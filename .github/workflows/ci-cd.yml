@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build/Test [${{ matrix.os }}, Go v${{ matrix.go }}]
+    name: Build [${{ matrix.os }}, go v${{ matrix.go }}]
     strategy:
       fail-fast: false
       matrix:
@@ -16,8 +16,10 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
-      - run: go build -v ./...
-      - run: go test -race ./...
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -race ./...
   
   release:
     name: Release
@@ -28,5 +30,7 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "1.15"
-      - run: go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+      - name: Build
+        run: go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
       - run: ls -la
+      - run: ./axis --version
