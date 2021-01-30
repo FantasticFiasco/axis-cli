@@ -25,16 +25,18 @@ jobs:
     name: Release
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [darwin, linux, windows]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: "1.15"
-      - name: Build
-        run: GOOS=${{ matrix.os }} go build -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+      - name: Build for MacOS
+        run: GOOS=darwin GOARCH=amd64 go build -o axis_macos_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+      - name: Build for Linux
+        run: GOOS=linux GOARCH=amd64 go build -o axis_linux_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
+      - name: Build for Windows
+        run: GOOS=windows GOARCH=amd64 go build -o axis_windows_amd64 -v -ldflags="-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO' -X 'github.com/FantasticFiasco/axis-cli/internal/build.Date=$(date +%F)'" ./cmd/axis
       - run: ls -la
-      # - run: ./axis --version
+      - run: ./axis_macos_amd64 --version
+      - run: ./axis_linux_amd64 --version
+      - run: ./axis_windows_amd64 --version
