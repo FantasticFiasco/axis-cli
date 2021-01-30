@@ -20,7 +20,7 @@ func main() {
 	case "bin/axis":
 		break
 	case "clean":
-		err = rmrf("bin")
+		err = delete("bin")
 		break
 	default:
 		err = usage()
@@ -31,6 +31,16 @@ func main() {
 		fmt.Print(err)
 		os.Exit(1)
 	}
+}
+
+func delete(targets ...string) error {
+	fmt.Printf("Delete %s\n", strings.Join(targets, ", "))
+	for _, target := range targets {
+		if err := os.RemoveAll(target); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func usage() error {
@@ -52,19 +62,4 @@ func usage() error {
 		},
 			"\n"),
 	)
-}
-
-func rmrf(targets ...string) error {
-	args := append([]string{"rm", "-rf"}, targets...)
-	print(args)
-	for _, target := range targets {
-		if err := os.RemoveAll(target); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func print(args []string) {
-	fmt.Println(strings.Join(args, " "))
 }
