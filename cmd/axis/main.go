@@ -13,6 +13,6 @@ func main() {
 
 	if *version == true {
 		fmt.Printf("axis version %s (%s)\n", build.Version, build.Date)
-		fmt.Println(build.ReleaseUrl)
+		fmt.Println(build.ReleaseURL)
 	}
 }

@@ -41,9 +41,9 @@ func build() error {
 	goarch := os.Getenv("ARCH")
 	out := fmt.Sprintf("./bin/axis_%s_%s", goos, goarch)
 
-	ldflags := "-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=TODO'"
-
 	tag := strings.ReplaceAll(os.Getenv("GITHUB_REF"), "refs/tags/", "")
+	ldflags := fmt.Sprintf("-X 'github.com/FantasticFiasco/axis-cli/internal/build.Version=%s'", tag)
+
 	releaseURL := releaseURL(tag)
 	ldflags = fmt.Sprintf("%s -X 'github.com/FantasticFiasco/axis-cli/internal/build.ReleaseURL=%s'", ldflags, releaseURL)
 
