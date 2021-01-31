@@ -63,7 +63,7 @@ func build() error {
 func releaseURL(tag string) string {
 	url := "https://github.com/FantasticFiasco/axis-cli/releases"
 	if tag != "" {
-		url = fmt.Sprintf("%s/tag/%s", url, tag)
+		url += "/tag/" + tag
 	}
 	return url
 }
