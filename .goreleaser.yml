@@ -6,14 +6,26 @@ before:
     - go generate ./...
 
 builds:
-  - main: ./cmd/axis/main.go
-    binary: axis
-    env:
-      - CGO_ENABLED=0
+  - <<: &build_defaults
+      main: ./cmd/axis/main.go
+      binary: axis
+      ldflags:
+
+      env:
+        - CGO_ENABLED=0
+    id: darwin
+    goos:
+      - darwin
+
+  - <<: *build_defaults
+    id: linux
     goos:
       - linux
+
+  - <<: *build_defaults
+    id: windows
+    goos:
       - windows
-      - darwin
 
 archives:
   - replacements:
