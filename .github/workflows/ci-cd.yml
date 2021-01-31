@@ -20,20 +20,3 @@ jobs:
         run: go build -v ./...
       - name: Test
         run: go test -race ./...
-
-  release:
-    name: Release
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.15'
-      - name: Build for macOS
-        run: OS=darwin ARCH=amd64 go run ./scripts/build.go bin/axis
-      - name: Build for Linux
-        run: OS=linux ARCH=amd64 go run ./scripts/build.go bin/axis
-      - name: Build for Windows
-        run: OS=windows ARCH=amd64 go run ./scripts/build.go bin/axis
