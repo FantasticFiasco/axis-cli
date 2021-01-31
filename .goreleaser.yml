@@ -28,23 +28,26 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-
-  # - replacements:
-  #     darwin: Darwin
-  #     linux: Linux
-  #     windows: Windows
-  #     386: i386
-  #     amd64: x86_64
+    replacements:
+      darwin: macOS
+      386: i386
+      amd64: x86_64
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: checksums.txt
 
 snapshot:
   name_template: "{{ .Tag }}-next"
 
+# TODO: Parse the changelog
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+
+release:
+  name_template: Release {{.Tag}}
+  draft: true       # TODO: Remove once we can parse the change log
+  prerelease: auto
