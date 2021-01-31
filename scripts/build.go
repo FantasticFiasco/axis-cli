@@ -69,8 +69,7 @@ func releaseURL(tag string) string {
 }
 
 func date() string {
-	t := time.Now()
-	return t.Format("2006-01-02")
+	return time.Now().Format("2006-01-02")
 }
 
 func run(exe string, args ...string) error {
