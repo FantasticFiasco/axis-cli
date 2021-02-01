@@ -1,4 +1,4 @@
-package releasenotes_test
+package main
 
 import (
 	"io/ioutil"
@@ -13,12 +13,15 @@ func TestReadFrom(t *testing.T) {
 		changelog    string
 		releaseNotes string
 	}{
-		{"CHANGELOG_BARE.md", "RELEASENOTES_BARE.md"},
+		{"BARE_CHANGELOG.md", "BARE_RELEASENOTES.md"},
 	}
 
 	for _, testCase := range testCases {
-		got := releasenotes.ReadFromFile(testCase.changelog)
 		want := mustReadTestData(testCase.releaseNotes)
+		got, err := readFromFile(path.Join("testdata", testCase.changelog))
+		if err != nil {
+			t.Error(err)
+		}
 		assert.Equal(t, want, got)
 	}
 }
