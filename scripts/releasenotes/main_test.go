@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"path"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,14 +10,15 @@ import (
 func TestReadFrom(t *testing.T) {
 	testCases := []struct {
 		changelog    string
+		version      string
 		releaseNotes string
 	}{
-		{"BARE_CHANGELOG.md", "BARE_RELEASENOTES.md"},
+		{"testdata/BARE_CHANGELOG.md", "v1.0.0", "testdata/BARE_RELEASENOTES.md"},
 	}
 
 	for _, testCase := range testCases {
 		want := mustReadTestData(testCase.releaseNotes)
-		got, err := readFromFile(path.Join("testdata", testCase.changelog))
+		got, err := readFromFile(testCase.changelog, testCase.version)
 		if err != nil {
 			t.Error(err)
 		}
@@ -27,7 +27,7 @@ func TestReadFrom(t *testing.T) {
 }
 
 func mustReadTestData(filename string) string {
-	content, err := ioutil.ReadFile(path.Join("testdata", filename))
+	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}

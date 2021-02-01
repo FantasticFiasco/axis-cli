@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -8,7 +9,15 @@ import (
 )
 
 func main() {
-	releaseNotes, err := readFromFile("./CHANGELOG.md")
+	version := flag.String("version", "", "The version to get release notes for")
+	flag.Parse()
+
+	if *version == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	releaseNotes, err := readFromFile("./CHANGELOG.md", *version)
 	if err != nil {
 		panic(err)
 	}
@@ -16,16 +25,17 @@ func main() {
 	fmt.Print(releaseNotes)
 }
 
-func readFromFile(filename string) (string, error) {
+func readFromFile(filename, version string) (string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return "", err
 	}
+	defer file.Close()
 
-	return readFrom(file)
+	return readFrom(file, version)
 }
 
-func readFrom(src io.Reader) (string, error) {
+func readFrom(src io.Reader, version string) (string, error) {
 	buf := new(strings.Builder)
 
 	_, err := io.Copy(buf, src)
