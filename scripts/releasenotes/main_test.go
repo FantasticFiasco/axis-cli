@@ -13,9 +13,13 @@ func TestReadFrom(t *testing.T) {
 		version      string
 		releaseNotes string
 	}{
+		{"testdata/1.0.0_CHANGELOG.md", "1.0.0", "testdata/1.0.0_RELEASENOTES.md"},
 		{"testdata/1.0.0_CHANGELOG.md", "v1.0.0", "testdata/1.0.0_RELEASENOTES.md"},
+		{"testdata/1.0.1_CHANGELOG.md", "1.0.1", "testdata/1.0.1_RELEASENOTES.md"},
 		{"testdata/1.0.1_CHANGELOG.md", "v1.0.1", "testdata/1.0.1_RELEASENOTES.md"},
+		{"testdata/1.1.0_CHANGELOG.md", "1.1.0", "testdata/1.1.0_RELEASENOTES.md"},
 		{"testdata/1.1.0_CHANGELOG.md", "v1.1.0", "testdata/1.1.0_RELEASENOTES.md"},
+		{"testdata/1.1.0_UNRELEASED_CHANGELOG.md", "v1.1.0", "testdata/1.1.0_UNRELEASED_RELEASENOTES.md"},
 		{"testdata/1.1.0_UNRELEASED_CHANGELOG.md", "v1.1.0", "testdata/1.1.0_UNRELEASED_RELEASENOTES.md"},
 	}
 

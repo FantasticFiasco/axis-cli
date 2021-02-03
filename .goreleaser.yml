@@ -40,5 +40,4 @@ snapshot:
 
 release:
   name_template: Release {{.Tag}}
-  draft: true       # TODO: Remove once we can parse the change log
   prerelease: auto
