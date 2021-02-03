@@ -2,12 +2,13 @@ package main
 
 import (
 	"io/ioutil"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestReadFrom(t *testing.T) {
+func TestMusteadFrom(t *testing.T) {
 	testCases := []struct {
 		changelog    string
 		version      string
@@ -33,10 +34,25 @@ func TestReadFrom(t *testing.T) {
 	}
 }
 
+func TestMustReadFromGivenInvalidVersion(t *testing.T) {
+	testCases := []struct {
+		changelog string
+		version   string
+	}{
+		{"testdata/1.0.0_CHANGELOG.md", "2.0.0"},
+		{"testdata/1.0.0_CHANGELOG.md", "v2.0.0"},
+	}
+
+	for _, testCase := range testCases {
+		_, err := readFromFile(testCase.changelog, testCase.version)
+		assert.NotNil(t, err)
+	}
+}
+
 func mustReadTestData(filename string) string {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
-	return string(content)
+	return strings.Trim(string(content), "\n")
 }

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -32,17 +34,40 @@ func readFromFile(filename, version string) (string, error) {
 	}
 	defer file.Close()
 
-	return readFrom(file, version)
+	return findChapterContent(file, version)
 }
 
-func readFrom(src io.Reader, version string) (string, error) {
-	buf := new(strings.Builder)
+func findChapterContent(r io.Reader, version string) (string, error) {
+	startPrefix := fmt.Sprintf("## [%s]", version)
+	stopPrefix := "## "
 
-	_, err := io.Copy(buf, src)
-	if err != nil {
-		return "", err
+	isReadingContent := false
+	content := ""
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		if strings.HasPrefix(scanner.Text(), startPrefix) {
+			isReadingContent = true
+		} else if isReadingContent {
+			if strings.HasPrefix(scanner.Text(), stopPrefix) {
+				break
+			} else {
+				content += scanner.Text()
+			}
+		}
 	}
 
-	//return buf.String(), nil
-	return "", nil
+	return content, scanner.Err()
+}
+
+func chapterRegexp() (*regexp.Regexp, error) {
+
+	expr := "## " + // Markdown chapter
+		`\[` + // Begin bracket
+		`(` + // Begin capturing group
+		`\d+\.\d+\.\d+` + // The version
+		`)` + // End capturing group
+		`\]` // End bracket
+
+	return regexp.Compile(expr)
 }
