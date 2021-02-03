@@ -38,6 +38,7 @@ func readFromFile(filename, version string) (string, error) {
 }
 
 func findChapterContent(r io.Reader, version string) (string, error) {
+	version = strings.TrimPrefix(version, "v")
 	startPrefix := fmt.Sprintf("## [%s]", version)
 	stopPrefix := "## "
 
@@ -52,12 +53,22 @@ func findChapterContent(r io.Reader, version string) (string, error) {
 			if strings.HasPrefix(scanner.Text(), stopPrefix) {
 				break
 			} else {
-				content += scanner.Text()
+				content += scanner.Text() + "\n"
 			}
 		}
 	}
 
-	return content, scanner.Err()
+	if scanner.Err() != nil {
+		return "", scanner.Err()
+	}
+
+	content = strings.Trim(content, "\n")
+
+	if content == "" {
+		return "", fmt.Errorf("release with version %s was not found", version)
+	}
+
+	return content, nil
 }
 
 func chapterRegexp() (*regexp.Regexp, error) {

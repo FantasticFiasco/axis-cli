@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMusteadFrom(t *testing.T) {
+func TestMustReadFrom(t *testing.T) {
 	testCases := []struct {
 		changelog    string
 		version      string
