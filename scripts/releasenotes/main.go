@@ -19,15 +19,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	releaseNotes, err := readFromFile("./CHANGELOG.md", *version)
+	releaseNotes, err := ReadFromFile("./CHANGELOG.md", *version)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	fmt.Print(releaseNotes)
 }
 
-func readFromFile(filename, version string) (string, error) {
+func ReadFromFile(filename, version string) (string, error) {
+	matched, err := regexp.MatchString(`\d+.\d+.\d+`, version)
+	if err != nil {
+		return "", err
+	}
+	if !matched {
+		return "", fmt.Errorf(`"%s" does not conform to the expected version format`, version)
+	}
+
 	file, err := os.Open(filename)
 	if err != nil {
 		return "", err
@@ -38,7 +47,6 @@ func readFromFile(filename, version string) (string, error) {
 }
 
 func readChapterContent(r io.Reader, version string) (string, error) {
-	version = strings.TrimPrefix(version, "v")
 	startPrefix := fmt.Sprintf("## [%s]", version)
 	stopPrefix := "## "
 
@@ -66,16 +74,4 @@ func readChapterContent(r io.Reader, version string) (string, error) {
 	}
 
 	return chapterContent, nil
-}
-
-func chapterRegexp() (*regexp.Regexp, error) {
-
-	expr := "## " + // Markdown chapter
-		`\[` + // Begin bracket
-		`(` + // Begin capturing group
-		`\d+\.\d+\.\d+` + // The version
-		`)` + // End capturing group
-		`\]` // End bracket
-
-	return regexp.Compile(expr)
 }
