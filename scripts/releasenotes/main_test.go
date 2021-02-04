@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMustReadFrom(t *testing.T) {
+func TestReadFromFile(t *testing.T) {
 	testCases := []struct {
 		changelog    string
 		version      string
@@ -27,14 +27,12 @@ func TestMustReadFrom(t *testing.T) {
 	for _, testCase := range testCases {
 		want := mustReadTestData(testCase.releaseNotes)
 		got, err := readFromFile(testCase.changelog, testCase.version)
-		if err != nil {
-			t.Error(err)
-		}
+		assert.Nil(t, err)
 		assert.Equal(t, want, got)
 	}
 }
 
-func TestMustReadFromGivenInvalidVersion(t *testing.T) {
+func TestReadFromGivenInvalidVersion(t *testing.T) {
 	testCases := []struct {
 		changelog string
 		version   string

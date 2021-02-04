@@ -34,27 +34,25 @@ func readFromFile(filename, version string) (string, error) {
 	}
 	defer file.Close()
 
-	return findChapterContent(file, version)
+	return readChapterContent(file, version)
 }
 
-func findChapterContent(r io.Reader, version string) (string, error) {
+func readChapterContent(r io.Reader, version string) (string, error) {
 	version = strings.TrimPrefix(version, "v")
 	startPrefix := fmt.Sprintf("## [%s]", version)
 	stopPrefix := "## "
 
-	isReadingContent := false
-	content := ""
+	isWithinChapter := false
+	chapterContent := ""
 
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		if strings.HasPrefix(scanner.Text(), startPrefix) {
-			isReadingContent = true
-		} else if isReadingContent {
-			if strings.HasPrefix(scanner.Text(), stopPrefix) {
-				break
-			} else {
-				content += scanner.Text() + "\n"
-			}
+			isWithinChapter = true
+		} else if isWithinChapter && strings.HasPrefix(scanner.Text(), stopPrefix) {
+			break
+		} else if isWithinChapter {
+			chapterContent += scanner.Text() + "\n"
 		}
 	}
 
@@ -62,13 +60,12 @@ func findChapterContent(r io.Reader, version string) (string, error) {
 		return "", scanner.Err()
 	}
 
-	content = strings.Trim(content, "\n")
-
-	if content == "" {
-		return "", fmt.Errorf("release with version %s was not found", version)
+	chapterContent = strings.Trim(chapterContent, "\n")
+	if chapterContent == "" {
+		return "", fmt.Errorf("release with version %s was not found in changelog", version)
 	}
 
-	return content, nil
+	return chapterContent, nil
 }
 
 func chapterRegexp() (*regexp.Regexp, error) {
