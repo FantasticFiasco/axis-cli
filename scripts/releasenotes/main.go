@@ -29,7 +29,7 @@ func main() {
 }
 
 func ReadFromFile(filename, version string) (string, error) {
-	matched, err := regexp.MatchString(`\d+.\d+.\d+`, version)
+	matched, err := regexp.MatchString(`^\d+.\d+.\d+$`, version)
 	if err != nil {
 		return "", err
 	}
