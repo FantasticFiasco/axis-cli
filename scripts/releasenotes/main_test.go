@@ -39,5 +39,5 @@ func mustReadTestData(filename string) string {
 	if err != nil {
 		panic(err)
 	}
-	return strings.Trim(string(content), "\n")
+	return strings.Trim(string(content), "\r\n")
 }
