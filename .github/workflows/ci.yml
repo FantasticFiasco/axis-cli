@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
+      - name: Release notes
+        run: go run ./scripts/releasenotes/main.go --version="${GITHUB_REF/refs/}"
       - name: Build
         run: go build -v ./...
       - name: Test
