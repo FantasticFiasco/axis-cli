@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -21,5 +22,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print(releaseNotes)
+	err = ioutil.WriteFile("./RELEASE_NOTES.md", []byte(releaseNotes), 0744)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
