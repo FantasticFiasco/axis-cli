@@ -18,6 +18,6 @@ jobs:
       - uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
-          args: release
+          args: release --release-notes <(go run ./scripts/releasenotes/main.go --version="${GITHUB_REF/refs\/tags\//}")
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
