@@ -7,15 +7,15 @@ import (
 )
 
 func main() {
-	version := flag.String("version", "", "The version to get release notes for")
+	versionFlag := flag.String("version", "", "The version to get release notes for")
 	flag.Parse()
 
-	if *version == "" {
+	if *versionFlag == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	releaseNotes, err := ReadFromFile("./CHANGELOG.md", *version)
+	releaseNotes, err := ReadFromFile("./CHANGELOG.md", *versionFlag)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
