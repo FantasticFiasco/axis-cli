@@ -1,0 +1,43 @@
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - <<: &build_defaults
+      main: ./cmd/axis/main.go
+      binary: axis
+      env:
+        - CGO_ENABLED=0
+    id: darwin
+    goos:
+      - darwin
+
+  - <<: *build_defaults
+    id: linux
+    goos:
+      - linux
+
+  - <<: *build_defaults
+    id: windows
+    goos:
+      - windows
+
+archives:
+  - format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+      darwin: macOS
+      386: i386
+      amd64: x86_64
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+release:
+  name_template: Release {{.Tag}}
+  prerelease: auto

@@ -3,16 +3,29 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	"github.com/FantasticFiasco/axis-cli/internal/build"
 )
 
+// The following variables are set by goreleaser during CD
+var version = "<version>"
+var commit = "<git sha>"
+var date = "<date>"
+
 func main() {
-	version := flag.Bool("version", false, "Show axis version")
+	versionFlag := flag.Bool("version", false, "Show axis version")
 	flag.Parse()
 
-	if *version == true {
-		fmt.Printf("axis version %s (%s)\n", build.Version, build.Date)
-		fmt.Println(build.ReleaseURL)
+	if *versionFlag == true {
+		fmt.Printf("axis %s\n", version)
+		fmt.Printf("commit:  %s\n", commit)
+		fmt.Printf("release: %s\n", releaseURL())
+		fmt.Printf("date:    %s\n", date)
 	}
+}
+
+func releaseURL() string {
+	url := "https://github.com/FantasticFiasco/axis-cli/releases"
+	if version != "<version>" {
+		url += "/tag/" + version
+	}
+	return url
 }
