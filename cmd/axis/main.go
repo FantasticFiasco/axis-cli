@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// The following variables are set by goreleaser during CI/CD
+// The following variables are set by goreleaser during CD
 var version = "<version>"
 var commit = "<git sha>"
 var date = "<date>"
