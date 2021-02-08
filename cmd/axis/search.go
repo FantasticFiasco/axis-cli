@@ -1,8 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/urfave/cli/v2"
+)
 
-func Search() error {
-	fmt.Println("TODO: Implement")
-	return nil
+var searchCommand = &cli.Command{
+	Name: "search",
+	Action: func(c *cli.Context) error {
+		fmt.Println("TODO: Implement")
+		return nil
+	},
 }

@@ -12,17 +12,16 @@ var commit = "<git sha>"
 var date = "<date>"
 
 func main() {
-	cli.VersionPrinter = versionPrinter
-
 	app := cli.App{
 		Name:    "axis",
 		Usage:   "axis is a tool for managing devices from Axis Communications.",
 		Version: version,
-		Action: func(c *cli.Context) error {
-			console.Print("TODO: Implement\n")
-			return nil
+		Commands: []*cli.Command{
+			searchCommand,
 		},
 	}
+
+	cli.VersionPrinter = versionPrinter
 
 	err := app.Run(os.Args)
 	if err != nil {
