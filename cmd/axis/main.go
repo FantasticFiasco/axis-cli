@@ -1,30 +1,45 @@
 package main
 
+import (
+	"github.com/FantasticFiasco/axis-cli/internal/console"
+	"github.com/urfave/cli/v2"
+	"os"
+)
+
 // The following variables are set by goreleaser during CD
 var version = "<version>"
 var commit = "<git sha>"
 var date = "<date>"
 
 func main() {
-	// TODO: Create basic configuration of the CLI parser
-	// TODO: Re-implement --version (https://github.com/urfave/cli/blob/master/docs/v2/manual.md#version-flag)
+	cli.VersionPrinter = versionPrinter
 
-	//versionFlag := flag.Bool("version", false, "Show axis version")
+	app := cli.App{
+		Name:    "axis",
+		Usage:   "axis is a tool for managing devices from Axis Communications.",
+		Version: version,
+		Action: func(c *cli.Context) error {
+			console.Print("TODO: Implement\n")
+			return nil
+		},
+	}
+
+	err := app.Run(os.Args)
+	if err != nil {
+		console.Fatal(err)
+	}
+
 	//searchFlag := flag.Bool("search", false, "Search for devices on the network")
-	//flag.Parse()
-	//
-	//var err error
-	//
-	//if *versionFlag == true {
-	//	commands.Version(version, commit, date)
-	//} else if *searchFlag {
-	//	err = commands.Search()
-	//} else {
-	//	flag.Usage()
-	//}
+}
 
-	//if err != nil {
-	//	fmt.Fprint(os.Stderr, err)
-	//	os.Exit(1)
-	//}
+func versionPrinter(c *cli.Context) {
+	url := "https://github.com/FantasticFiasco/axis-cli/releases"
+	if version != "<version>" {
+		url += "/tag/" + version
+	}
+
+	console.Printf("axis %s\n", version)
+	console.Printf("commit:  %s\n", commit)
+	console.Printf("release: %s\n", url)
+	console.Printf("date:    %s\n", date)
 }
